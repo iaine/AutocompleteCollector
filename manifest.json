@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "name": "AutocompleteCollector",
   "version": "0.0.1",
-  "homepage_url": "https://github.com/iaine/",
+  "homepage_url": "https://github.com/iaine/AutocompleteCollector",
 
   "permissions": [
     "webRequest", "webRequestBlocking", "webNavigation", "<all_urls>", "storage", "downloads", "activeTab", "tabs",
