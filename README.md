@@ -1,15 +1,39 @@
 ## Autocomplete Reader
 
-Reads a search engines autocomplete requests. 
+This is a Firefox plugin to read the autocomplete responses from search engines
 
-Only covers Google, Yandex, Baidu, and DuckDuckGo
+Currently only Google, DuckDuckGo, Yandex, and Baidu are covered.
 
-### todo
+The plugin uses the WebRequest API to record queries. Data is stored in your browser. 
 
-lots
+### Usage
 
-More search engines
+Install the plugin into Firefox. 
 
-Documentation
+Open a new tab with the search engine to be tested. 
 
-Release
+Query the autocomplete. 
+
+Click open the plugin. 
+
+Click select against the desired engine to get data or delete to remove it. 
+
+A CSV will be downloaded with the headings:
+
+collected - the time collected
+siteurl - the engine used
+query - the query
+suggestions - the suggestions separated by ;
+extra information - any extra information separated by ;
+
+### Issues, Features, and Bugs
+
+This is research software on a moving set of platforms. Things are likely to change. 
+
+Please do raise bugs and issues on the Github issue tracker.
+
+### Roadmap
+
+There are hopes to expand this with other features as and when.
+
+One is to track if working in AI mode at all. 
