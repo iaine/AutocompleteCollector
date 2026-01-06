@@ -214,6 +214,6 @@ function downloadCsv(data, platform) {
 }
 
 function nameFile (platform) {
-  const d = new Date().toUTCString();
+  const d = new Date().toISOString();
   return [platform, d, ".csv"].join("-");
 }
