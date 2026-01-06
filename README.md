@@ -20,11 +20,15 @@ Click select against the desired engine to get data or delete to remove it.
 
 A CSV will be downloaded with the headings:
 
-collected - the time collected
-siteurl - the engine used
-query - the query
-suggestions - the suggestions separated by ;
-extra information - any extra information separated by ;
+* collected - the time collected
+
+* siteurl - the engine used
+
+* query - the query
+
+* suggestions - the suggestions separated by ;
+
+* extra information - any extra information separated by ;
 
 ### Issues, Features, and Bugs
 
