@@ -23,15 +23,12 @@ function createDB() {
 
   request.onsuccess = function (event) {
     const db = event.target.result;
-    console.log(db.objectStoreNames);
+
     if (!db.objectStoreNames.contains("auto")) {
       const objectStore = db.createObjectStore("auto", { keyPath: "collected" });
       objectStore.createIndex("siteurl", "siteurl", { unique: false });
       objectStore.transaction.oncomplete = (event) => {
-        // Store values in the newly created objectStore.
-        const customerObjectStore = db
-          .transaction("auto", "readwrite")
-          .objectStore("auto");
+        
       };
     }
     console.log("Database opened successfully");
@@ -61,7 +58,7 @@ function addComplete(timestamp, url, query, autofill, extrainfo) {
     const addRequest = objectStore.add(user);
 
     addRequest.onsuccess = function () {
-      console.log("User added:", user);
+      console.log("Data added:", user);
     };
 
     addRequest.onerror = function (event) {
@@ -204,11 +201,8 @@ function downloadCsv(data, platform) {
   const csv = convertToCsv(data);
 
   var hiddenElement = document.createElement('a'); 
-  hiddenElement.href = window.URL.createObjectURL(csv); 
-  //hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+  hiddenElement.href = window.URL.createObjectURL(csv);  
   hiddenElement.target = '_blank';  
-
-  //provide the name for the CSV file to be downloaded  
   hiddenElement.download = nameFile(platform);  
   hiddenElement.click();
 }
