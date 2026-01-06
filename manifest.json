@@ -6,6 +6,15 @@
   "version": "0.0.1",
   "homepage_url": "https://github.com/iaine/AutocompleteCollector",
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@addon-autocomplete",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+
   "permissions": [
     "webRequest", "webRequestBlocking", "webNavigation", "<all_urls>", "storage", "downloads", "activeTab", "tabs",
     "unlimitedStorage"
