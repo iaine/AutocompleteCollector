@@ -1,8 +1,6 @@
-
+createDB();
 
 function listener(details) {
-  
-  createDB();
 
   let fullResponse = ""
   const sourceUrl = details.url;
@@ -28,7 +26,7 @@ function listener(details) {
   return {};
 }
 
-browser.webRequest.onBeforeRequest.addListener(
+browser.webRequest.onBeforeRequest.addListener( 
     listener, {urls: ["https://*/*"], types: ["main_frame", "xmlhttprequest", "script"]}, ["blocking"]
 );
 

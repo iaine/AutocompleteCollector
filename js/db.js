@@ -1,5 +1,5 @@
 const dbName = "AutoComplete";
-const dbVersion = 2; // Versioning is required for schema updates.
+const dbVersion = 2;
 
 function createDB() {
 
@@ -7,8 +7,23 @@ function createDB() {
 
   request.onupgradeneeded = function (event) {
     const db = event.target.result;
-
     // Create an object store named 'auto' with 'now' as the keyPath
+    if (!db.objectStoreNames.contains("auto")) {
+      const objectStore = db.createObjectStore("auto", { keyPath: "collected" });
+      objectStore.createIndex("siteurl", "siteurl", { unique: false });
+      /*objectStore.transaction.oncomplete = (event) => {
+        // Store values in the newly created objectStore.
+        const customerObjectStore = db
+          .transaction("auto", "readwrite")
+          .objectStore("auto");
+      };*/
+    }
+    console.log("Database setup complete");
+  };
+
+  request.onsuccess = function (event) {
+    const db = event.target.result;
+    console.log(db.objectStoreNames);
     if (!db.objectStoreNames.contains("auto")) {
       const objectStore = db.createObjectStore("auto", { keyPath: "collected" });
       objectStore.createIndex("siteurl", "siteurl", { unique: false });
@@ -19,11 +34,6 @@ function createDB() {
           .objectStore("auto");
       };
     }
-    console.log("Database setup complete");
-  };
-
-  request.onsuccess = function (event) {
-    const db = event.target.result;
     console.log("Database opened successfully");
   };
 
