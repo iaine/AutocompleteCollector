@@ -72,19 +72,21 @@ function parseGoogle (fullResponse, sourcePlatformUrl, sourceUrl, tabId) {
   if (sourceUrl.includes("complete")) {
         //remove the extra info at the beginning as it breaks json parsing.
         const parsed = JSON.parse(fullResponse.replace(")]}'", ""))
+        let q = sourceUrl.replace("https://www.google.com/complete/search?q=","")
+        let queryStr = q.split("&")[0];
 
         //run over each row and get the response and any extra information
         parsed.forEach ( function (x) {
-            let queryStr = [];
+            let suggestions = [];
             let extraInfo = [];
             if (Array.isArray(x)) {
                 x.forEach(function(y){
-                    queryStr.push(y[0]); 
+                    suggestions.push(escapeHTML(y[0])); 
                     const info = (y.length > 3) ? y[3]['zi']: "";
-                    extraInfo.push(info.replace(",", "\\,"));
+                    extraInfo.push(escapeHTML(info));
                 })
                 const now = Date.now();
-                addComplete(now, sourcePlatformUrl, queryStr.join(';'), extraInfo.join(';'));
+                addComplete(now, sourcePlatformUrl, queryStr, suggestions.join(';'), extraInfo.join(';'));
             }
         } );
     }
@@ -95,7 +97,6 @@ function parseBaidu (fullResponse, sourcePlatformUrl, sourceUrl, tabId) {
         if (sourceUrl.includes("sugrec") && fullResponse.length > 1) {
             const js = fullResponse.split("(")[1];
             //remove the extra info at the beginning as it breaks json parsing.
-            console.log(js);
             const parsed = JSON.parse(js.slice(0, -1))
 
             let suggestions = []
@@ -116,13 +117,12 @@ function parseBaidu (fullResponse, sourcePlatformUrl, sourceUrl, tabId) {
 function parseYandex (fullResponse, sourcePlatformUrl, sourceUrl, tabId) {
     try {
         if (sourceUrl.includes("suggest-ya") && fullResponse.length > 1) {
-            //remove the extra info at the beginning as it breaks json parsing.
+
             const parsed = JSON.parse(fullResponse)
-            console.log(parsed)
             let suggestions = []
             let extraInfo = [];
             let queryStr = parsed[0];
-            //run over each row and get the response and any extra information
+
             parsed[1].forEach ( function (x) {
                 suggestions.push(x[1]);
             } );
@@ -142,7 +142,7 @@ function parseDuckDuckGo (fullResponse, sourcePlatformUrl, sourceUrl, tabId) {
             const parsed = JSON.parse(fullResponse)
             let suggestions = []
             let extraInfo = [];
-            let q = sourceUrl.replace("https://duckduckgo.com/ac/?q=","")[0]
+            let q = sourceUrl.replace("https://duckduckgo.com/ac/?q=","")
             let queryStr = q.split("&")[0];
             //run over each row and get the response and any extra information
             parsed.forEach ( function (x) {
