@@ -19,5 +19,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm init @eslint/config@latest
+      - run: npm init
+      - run: npm init @eslint/config@latest      
       - run: npm run lint
+      
