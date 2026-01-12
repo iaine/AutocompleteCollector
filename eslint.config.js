@@ -1,11 +1,8 @@
 // eslint.config.js
-import { defineConfig } from "eslint/config";
+import globals from "globals";
+import pluginJs from "@eslint/js";
 
-export default defineConfig([
-	{
-		rules: {
-			semi: "error",
-			"prefer-const": "error",
-		},
-	},
-]);
+export default [
+  {languageOptions: { globals: globals.browser }},
+  pluginJs.configs.recommended,
+];
