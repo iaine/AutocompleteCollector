@@ -19,5 +19,5 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --save-dev eslint@latest @eslint/js@latest     
-      - run: npx eslint *.js
+      - run: curl -L https://www.jslint.com/jslint.mjs > jslint.mjs     
+      - run: node jslint.mjs *.js
