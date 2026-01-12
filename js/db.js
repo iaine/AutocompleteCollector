@@ -110,7 +110,7 @@ function getSite(url) {
 
 /**
  *  Remove all data for site. 
- * @param {string} id 
+ * @param {string} url 
  */
 function deleteSite(url) {
   const request = indexedDB.open(dbName, dbVersion);
@@ -134,6 +134,31 @@ function deleteSite(url) {
       }
     };
 
+  };
+}
+
+/**
+ *  Remove all data for site. 
+ */
+function deleteAll() {
+  const request = indexedDB.open(dbName, dbVersion);
+
+  request.onsuccess = function (event) {
+    const db = event.target.result;
+    const transaction = db.transaction("auto", "readwrite");
+    const objectStore = transaction.objectStore("auto");
+
+    const getRequest = objectStore.getAll();
+
+    getRequest.onsuccess = function () {
+      if (getRequest.result) {
+        getRequest.result.forEach(x => {
+          deleteKey(objectStore, x);
+        });
+      } else {
+        console.log("No data found");
+      }
+    };
   };
 }
 
