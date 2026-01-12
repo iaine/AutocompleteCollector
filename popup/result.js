@@ -11,10 +11,14 @@ function button_handler(event) {
       console.log (fetchData(platform));
     } else if (event.target.matches(".remove")) {
       platform = event.target.getAttribute("data-attribute")
-      try {
-         deleteSite(platform);
-      } catch (error) {
-        console.error(error);
+      if (platform == "all") {
+          deleteAll();
+      } else {
+        try {
+          deleteSite(platform);
+        } catch (error) {
+          console.error(error);
+        }
       }
      
     }
