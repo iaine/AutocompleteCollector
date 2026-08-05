@@ -20,4 +20,4 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: curl -L https://www.jslint.com/jslint.mjs > jslint.mjs     
-      - run: node jslint.mjs *.js
+      - run: node jslint.mjs pwd/*.js

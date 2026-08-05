@@ -30,6 +30,14 @@ A CSV will be downloaded with the headings:
 
 * extra information - any extra information separated by ;
 
+### Data collection toggle
+
+Each engine in the popup has an on/off switch. Turning an engine off stops
+new suggestions being stored for it immediately -- including on a tab that's
+already open and mid-session -- because the background script re-checks the
+setting on every autocomplete response, live, via `storage.onChanged`. It
+does not delete data already collected; use Remove/Clear Data for that.
+
 ### Issues, Features, and Bugs
 
 This is research software on a moving set of platforms. Things are likely to change. 

@@ -7,27 +7,61 @@
     <body>
         <h2 class="version">Autocomplete Reader v0.0.1</h2>
         <table>
+            <tr>
+                <th></th>
+                <th>Collect</th>
+                <th></th>
+                <th></th>
+            </tr>
             <tr><td>Google</td>
+                <td>
+                    <label class="toggle-switch square" title="Collect data for Google">
+                        <input type="checkbox" class="engine-toggle" data-engine="google">
+                        <span class="slider"></span>
+                    </label>
+                </td>
                 <td><button class="select" data-attribute="google">Select</button></td>
                 <td><button class="remove" data-attribute="google">Remove</button></td></tr>
             <tr><td>Baidu</td>
+                <td>
+                    <label class="toggle-switch square" title="Collect data for Baidu">
+                        <input type="checkbox" class="engine-toggle" data-engine="baidu">
+                        <span class="slider"></span>
+                    </label>
+                </td>
                 <td><button class="select" data-attribute="baidu">Select</button></td>
                 <td><button class="remove" data-attribute="baidu">Remove</button></td></tr>
             <tr><td>Yandex</td>
+                <td>
+                    <label class="toggle-switch square" title="Collect data for Yandex">
+                        <input type="checkbox" class="engine-toggle" data-engine="yandex">
+                        <span class="slider"></span>
+                    </label>
+                </td>
                 <td><button class="select" data-attribute="yandex">Select</button></td>
                 <td><button class="remove" data-attribute="yandex">Remove</button></td></tr>
             <tr><td>DuckDuckGo</td>
+                <td>
+                    <label class="toggle-switch square" title="Collect data for DuckDuckGo">
+                        <input type="checkbox" class="engine-toggle" data-engine="duckduckgo">
+                        <span class="slider"></span>
+                    </label>
+                </td>
                 <td><button class="select" data-attribute="duckduckgo">Select</button></td>
                 <td><button class="remove" data-attribute="duckduckgo">Remove</button></td></tr>
             <tr><td>Remove Data</td>
+                <td></td>
+                <td></td>
                 <td><button class="remove" data-attribute="all">Clear Data</button></td></tr>
-            </table>
             </table>
         <footer>
             <p>Search Engines do changes their formats. <br />
                 If data appears to be missing, please do check the browser.</p>
+            <p>Turning a toggle off stops new data being stored for that engine immediately,
+               even on a page that's already open. It does not delete data already collected --
+               use Remove for that.</p>
         </footer>
-        <script type="text/javascript" src="result.js"></script>
         <script type="text/javascript" src="../js/db.js"></script>
+        <script type="text/javascript" src="result.js"></script>
     </body>
 </html>

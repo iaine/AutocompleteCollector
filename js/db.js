@@ -7,30 +7,21 @@ function createDB() {
 
   request.onupgradeneeded = function (event) {
     const db = event.target.result;
-    // Create an object store named 'auto' with 'now' as the keyPath
+    // Create an object store named 'auto' with 'collected' as the keyPath
     if (!db.objectStoreNames.contains("auto")) {
       const objectStore = db.createObjectStore("auto", { keyPath: "collected" });
       objectStore.createIndex("siteurl", "siteurl", { unique: false });
-      /*objectStore.transaction.oncomplete = (event) => {
-        // Store values in the newly created objectStore.
-        const customerObjectStore = db
-          .transaction("auto", "readwrite")
-          .objectStore("auto");
-      };*/
     }
     console.log("Database setup complete");
   };
 
   request.onsuccess = function (event) {
+    // Object store creation can only happen inside onupgradeneeded (a
+    // versionchange transaction) -- doing it here as before would throw
+    // if it were ever reached. By the time onsuccess fires, the store
+    // is guaranteed to already exist, so there's nothing left to do.
     const db = event.target.result;
-
-    if (!db.objectStoreNames.contains("auto")) {
-      const objectStore = db.createObjectStore("auto", { keyPath: "collected" });
-      objectStore.createIndex("siteurl", "siteurl", { unique: false });
-      objectStore.transaction.oncomplete = (event) => {
-        
-      };
-    }
+    db.close();
     console.log("Database opened successfully");
   };
 
@@ -64,6 +55,14 @@ function addComplete(timestamp, url, query, autofill, extrainfo) {
     addRequest.onerror = function (event) {
       console.error("Error adding user:", event.target.errorCode);
     };
+
+    transaction.oncomplete = function () {
+      db.close();
+    };
+  };
+
+  request.onerror = function (event) {
+    console.error("Error opening database:", event.target.errorCode);
   };
 }
 
@@ -97,13 +96,16 @@ function getSite(url) {
       console.error("Error retrieving user:", event.target.errorCode);
     };
 
-    request.oncomplete = function () {
+    // This used to be set on `request` (the IDBOpenDBRequest), which
+    // has no `oncomplete` event -- only a transaction does. Because of
+    // that, `db.close()` was silently never called and the connection
+    // leaked. Fixed by attaching it to the transaction instead.
+    transaction.oncomplete = function () {
         db.close();
     };
   };
 
   request.onerror = function (event) {
-    const db = event.target.result;
     console.error("Error retrieving data:", event.target.errorCode);
   }
 }
@@ -134,11 +136,18 @@ function deleteSite(url) {
       }
     };
 
+    transaction.oncomplete = function () {
+      db.close();
+    };
+  };
+
+  request.onerror = function (event) {
+    console.error("Error opening database:", event.target.errorCode);
   };
 }
 
 /**
- *  Remove all data for site. 
+ *  Remove all data for every site.
  */
 function deleteAll() {
   const request = indexedDB.open(dbName, dbVersion);
@@ -159,6 +168,14 @@ function deleteAll() {
         console.log("No data found");
       }
     };
+
+    transaction.oncomplete = function () {
+      db.close();
+    };
+  };
+
+  request.onerror = function (event) {
+    console.error("Error opening database:", event.target.errorCode);
   };
 }
 
@@ -179,39 +196,42 @@ function deleteKey (objectStore, d) {
     }
 }
 
-function resetAll() {
-  const transaction = db.transaction(['MyObjectStore'], 'readwrite');
-  const objectStore = transaction.objectStore('MyObjectStore');
-
-  // Clear all records
-  const clearRequest = objectStore.clear();
-
-  clearRequest.onsuccess = function() {
-    console.log('All records deleted successfully');
-  };
-
-  clearRequest.onerror = function() {
-    console.error('Failed to delete all records');
-  };
-}
-
 /**
- * Convert JSON to CSV
+ * Convert an array of row objects into a properly quoted CSV Blob.
+ *
+ * The previous implementation just did `Object.values(row).join(',')`
+ * with no quoting at all, so any suggestion or extra-info value that
+ * happened to contain a comma, quote character, or newline (very
+ * possible -- this data comes from live search engines) would silently
+ * corrupt the CSV and misalign columns. Every field is now wrapped in
+ * quotes per RFC 4180, with internal quotes doubled.
+ *
+ * Fields are also guarded against CSV/formula injection: a value
+ * starting with =, +, -, or @ gets a leading apostrophe so Excel/Sheets
+ * won't try to evaluate it as a formula when the file is opened later.
  * @param {Object} jsonData 
  */
+function csvField(value) {
+  let str = (value === undefined || value === null) ? "" : String(value);
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = "'" + str;
+  }
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
 function convertToCsv(jsonData) {
     console.log(jsonData);
-    const lines = []
-    const header = Object.keys(jsonData[0])
     try {
-      Array.from(jsonData).forEach(element => {
-        lines.push(Object.values(element).join(','))
-      });
+      if (!jsonData || jsonData.length === 0) {
+        return new Blob([""], {type: 'text/csv'});
+      }
+      const header = Object.keys(jsonData[0]);
+      const lines = jsonData.map(row => header.map(key => csvField(row[key])).join(','));
 
       const csv = [
-          header.join(','), // header row first
-          lines.join('\n')
-      ].join('\n');
+          header.map(csvField).join(','), // header row first
+          ...lines
+      ].join('\r\n');
       console.log(csv);
 
       return new Blob([csv], {type: 'text/csv'});

@@ -1,8 +1,17 @@
+table {
+    border-collapse: collapse;
+}
+
+table td, table th {
+    padding: 4px 8px;
+    text-align: left;
+}
+
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 30px;
+    width: 44px;
+    height: 22px;
 }
 
 .toggle-switch input {
@@ -27,8 +36,8 @@
 .square .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: 18px;
+    width: 18px;
     left: 2px;
     bottom: 2px;
     background-color: white;
@@ -41,5 +50,5 @@
 }
 
 .square input:checked+.slider:before {
-    transform: translateX(30px);
+    transform: translateX(22px);
 }
